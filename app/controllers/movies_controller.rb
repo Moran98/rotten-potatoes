@@ -10,6 +10,12 @@ class MoviesController < ApplicationController
     @ratings_to_show = params[:ratings] || session[:ratings] 
     @movies = Movie.with_ratings(@ratings)
     
+    if params[:ratings].nil? and params[:sort].nil? and !params[:usecookie].nil? and session[:set] == 1
+      params[:ratings] = session[:saved]
+      params[:sort] = session[:saved_sort]
+      redirect_to(movies_path(params))
+    end
+    
     if params[:ratings].nil?
       @ratings_to_show = []
       @movies = Movie.all
@@ -20,10 +26,14 @@ class MoviesController < ApplicationController
     
     @movies = @movies.order(params[:sort])
     if params[:sort] == "title"
-      @title_color = "hilite bg-warning"
+      @title = "hilite bg-warning"
     elsif params[:sort] == "release_date"
-      @release_color = "hilite bg-warning"
+      @release = "hilite bg-warning"
     end
+    
+    session[:set] = 1
+    session[:saved] = params[:rating]
+    session[:saved_sort] = params[:sort]
   end
 
   def new
