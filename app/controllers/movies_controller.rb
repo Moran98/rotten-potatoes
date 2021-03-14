@@ -8,7 +8,6 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.all_ratings
     @ratings_to_show = params[:ratings] || session[:ratings] 
-    @movies = Movie.with_ratings(@ratings)
     
     if params[:ratings].nil? and params[:sort].nil? and !params[:usecookie].nil? and session[:set] == 1
       params[:ratings] = session[:saved]
